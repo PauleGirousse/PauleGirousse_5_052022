@@ -44,7 +44,6 @@ promise01.then((response) => {
         let newProductName = document.createElement("h3");
         let newProductDescription = document.createElement("p");
         let newId = document.createElement("_id");
-        // let newURL = newA + newId;
 
         newArticle.appendChild(newImage);
         newArticle.appendChild(newProductName);
@@ -63,6 +62,9 @@ promise01.then((response) => {
         newA.setAttribute("href", "./product.html?");
 
         // items.appendChild(newA).appendChild(newArticle);
+        let newUrl = newA + newId; //ajout de l'id du produit à l'ancre
+        console.log(newUrl);
+        newA.setAttribute("href", newUrl); //modification de l'ancre dans la page
       }
     })
 
