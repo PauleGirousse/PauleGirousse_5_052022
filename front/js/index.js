@@ -1,5 +1,7 @@
 console.log("bonjour");
 
+//récupération des données de l'API dans la page index.html
+
 let items = document.getElementById("items"); //container de l'affichage produits dynamique
 
 // on fait un appel reseau vers la liste des canapés
@@ -62,8 +64,10 @@ promise01.then((response) => {
         newA.setAttribute("href", "./product.html?");
 
         // items.appendChild(newA).appendChild(newArticle);
-        let newUrl = newA + newId; //ajout de l'id du produit à l'ancre
+
+        let newUrl = newA + "id=" + newId; //ajout de la clé Id et de l'id du produit à l'ancre
         console.log(newUrl);
+
         newA.setAttribute("href", newUrl); //modification de l'ancre dans la page
       }
     })
