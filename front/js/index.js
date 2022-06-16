@@ -65,7 +65,7 @@ promise01.then((response) => {
 
         // items.appendChild(newA).appendChild(newArticle);
 
-        let newUrl = newA + "id=" + newId; //ajout de la clé Id et de l'id du produit à l'ancre
+        let newUrl = newA + "_id=" + newId; //ajout de la clé Id et de l'id du produit à l'ancre
         console.log(newUrl);
 
         newA.setAttribute("href", newUrl); //modification de l'ancre dans la page
