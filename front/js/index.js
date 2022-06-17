@@ -40,7 +40,7 @@ promise01.then((response) => {
       //   console.log(canape);
       // création de la boucle et de ces balises pour chaque élément
       for (i = 0; i < data.length; i++) {
-        let newA = document.createElement("a");
+        const newA = document.createElement("a");
         let newArticle = document.createElement("article");
         let newImage = document.createElement("img");
         let newProductName = document.createElement("h3");
@@ -61,14 +61,17 @@ promise01.then((response) => {
         newImage.setAttribute("alt", data[i].altTxt); //récupération du texte alternatif
         newProductName.innerText = data[i].name; //récupération du nom du produit
         newProductDescription.innerText = data[i].description; //récupération de la description du prduit
-        newA.setAttribute("href", "./product.html?");
+        // newA.setAttribute("href", "./product.html?");
+        newA.setAttribute("href", "./product.html?" + "_id=" + newId);
+        console.log(newA);
 
         // items.appendChild(newA).appendChild(newArticle);
 
-        let newUrl = newA + "_id=" + newId; //ajout de la clé Id et de l'id du produit à l'ancre
-        console.log(newUrl);
+        // let newUrl = newA + "_id=" + newId; //ajout de la clé Id et de l'id du produit à l'ancre
 
-        newA.setAttribute("href", newUrl); //modification de l'ancre dans la page
+        // let newUrl = new URLSearchParams(newA.search);
+        // newUrl.toString("_id=", newId);
+        // console.log(newUrl);
       }
     })
 
