@@ -42,93 +42,87 @@ const canapes = async function () {
       colorSelect.appendChild(option);
       console.log(color);
     }
-    function saveArticle() {
-      colorSelect.addEventListener("click", choisircouleur);
-      function choisircouleur() {
-        let indexCouleur = colorSelect.options[colors.selectedIndex].value;
-        console.log(indexCouleur);
-        localStorage.setItem(
-          "indexCouleur",
-          colorSelect.options[colors.selectedIndex].value
-        );
-      }
-      quantitySelect.addEventListener("click", choisirquantite);
-      function choisirquantite() {
-        let nbCanapes = quantitySelect.value;
-        console.log(nbCanapes);
-        localStorage.setItem("nbCanapes", quantitySelect.value);
-      }
-    }
   }
-  saveArticle();
 };
 
 canapes();
-// let color = localStorage.getItem("indexCouleur");
-// let quantity = localStorage.getItem("indexCouleur");
-// class article {
-//   constructor(_id, color, quantity) {
-//     this._id = _id;
-//     this.color = color;
-//     this.quantity = quantity;
+
+// let article = {};
+// let lsPanier = [];
+// let lsArticle = "";
+
+// ajouteraupanier.addEventListener("click", ajout);
+// function ajout() {
+//   // lsPanier = localStorage.getItem("lsArticle");
+//   // localStorage.getItem("lsPanier", JSON.stringify(lsPanier));
+//   // lsPanier.push(lsArticle);
+
+//   let ancienPanier = localStorage.getItem("lsPanier");
+
+//   let canapes = JSON.parse(ancienPanier);
+
+//   //Récupération par des valeurs de l'article
+//   let article = {
+//     _id: idParams,
+//     color: colorSelect.options[colors.selectedIndex].value,
+//     quantity: quantitySelect.value,
+//   };
+//   console.log(article);
+//   let canapetrouve = false;
+//   for (let canape of canapes) {
+//     if (article._id == canape._id && article.color == canape.color) {
+//       canape.quantity += article.quantity;
+//       canapetrouve = true;
+//     }
 //   }
+//   if (canapetrouve == false) {
+//     canapes.push(article);
+//   }
+//   localStorage.setItem("lsPanier", JSON.stringify(canapes));
+//   // lsPanier = localStorage.getItem("lsArticle");
+//   // let panier = JSON.parse(localStorage.getItem(lsPanier)); //panier en format js
+//   console.log(canapes);
 // }
-let article = "";
-let lsPanier = [];
-let lsArticle = "";
 
 ajouteraupanier.addEventListener("click", ajout);
 function ajout() {
-  //   // lsPanier = localStorage.getItem("lsArticle");
-  //   // localStorage.getItem("lsPanier", JSON.stringify(lsPanier));
-  //   // lsPanier.push(lsArticle);
-
-  article = {
-    _id: localStorage.getItem("_id"),
-    color: localStorage.getItem("indexCouleur"),
-    quantity: localStorage.getItem("nbCanapes"),
+  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //conversion du panier Json en javascript
+  //Création de l'objet article
+  let article = {
+    _id: idParams,
+    color: colorSelect.options[colors.selectedIndex].value,
+    quantity: parseInt(quantitySelect.value, 10), //pour additionner, conversion de string en number
   };
-  console.log(article);
-  let lsArticle = localStorage.setItem("article", JSON.stringify(article));
-  lsArticle = localStorage.getItem("article");
-  let lsPanier = localStorage.setItem("lsPanier", lsArticle);
-  localStorage.getItem("lsPanier", JSON.stringify(lsPanier));
-  lsPanier = localStorage.getItem("lsArticle");
-  let panier = JSON.parse(localStorage.getItem(lsPanier)); //panier en format js
-  console.log(panier);
+
+  // Si le panier contient déja des articles
+  if (ancienPanier) {
+    let recherchearticleidentique = ancienPanier.find(
+      //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
+      (produit) =>
+        produit._id === article._id && produit.color === article.color
+    );
+    // console.log(recherchearticleidentique);
+    if (recherchearticleidentique == undefined) {
+      //si aucun article identique n'est trouvé, dépot de l'article dans le panier
+      ancienPanier.push(article);
+      localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+      console.log(ancienPanier);
+    } else {
+      console.log(recherchearticleidentique.quantity); //si il existe un article identique dans le panier
+      console.log(article.quantity);
+      recherchearticleidentique.quantity += article.quantity; //ajout de la quantité de l'article à l'article identique
+      console.log(recherchearticleidentique.quantity);
+      localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+    }
+  }
+  //Si le panier est vide
+  else {
+    ancienPanier = []; //création du panier
+    ancienPanier.push(article); //dépot de l'article dans le panier
+    localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+    console.log(ancienPanier);
+  }
+  // for (article of ancienPanier) {
+  //   if (article._id == )
+  // };
 }
-ajout();
-
-// let saveArticle = [];
-// function saveProduit() {
-//   let ls_id = localStorage.getItem("_id");
-//   if (ls_id !== null) {
-//     saveArticle.push((_id = localStorage.getItem("_id")));
-//   }
-//   let lsColor = localStorage.getItem("indexCouleur");
-//   if (lsColor !== null)
-//     saveArticle.push((color = localStorage.getItem("indexCouleur")));
-
-//   let lsQuantity = localStorage.getItem("nbCanapes");
-//   if (lsQuantity !== null) {
-//     saveArticle.push((quantity = localStorage.getItem("nbCanapes")));
-//   }
-// }
-// saveProduit();
-// console.log(saveArticle);
-
-// ajouteraupanier.addEventListener("click",function(envoyer)){
-
-// }
-
-// panier.push(idParams, color);
-
-// const productById = data.find((element) => element._id === idParams); //trouve l'article dans le tableau en fonction de son Id
-// quantite = data.quantity;
-// let panier = document.querySelector("addToCart");
-// console.log(quantite);
-
-// if (color.article !== null && quantity.article !== null) {
-// } else {
-//   alert("Veuillez remplir le(s) champ(s)");
-// }
