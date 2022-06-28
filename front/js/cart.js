@@ -42,9 +42,9 @@ if (panier === null) {
           price: rechercheProduitApi.price,
           quantity: canape.quantity,
         };
-        // console.log(canapePanier);
+        // console.log(canapeFinal);
         panierFinal.push(canapeFinal); // insertion dans le panier final des canapés combinés
-        console.log(panierFinal);
+        // console.log(panierFinal);
 
         let cart__item__img = document.createElement("div"); // Création de l'affichage dynamique du panier
         cart__item__img.classList.add("cart__item__img");
@@ -124,6 +124,38 @@ if (panier === null) {
         cart__item__content__settings__delete.appendChild(supprimer);
 
         items.appendChild(article); //insertion dans le HTML
+
+        // input.addEventListener("change", newQuantity);
+        input.addEventListener("change", newQuantity);
+        function newQuantity() {
+          canape.quantity = this.value;
+          console.log(canape.quantity);
+          console.log(canapeFinal._id);
+
+          // panierFinal.removeItem(canape.quantity, this.value);
+          // console.log(panierFinal.canapeFinal.quantity);
+          // .JSON.stringify(lsPanier);
+        }
+        //supprime l'objet dans le tableau
+        supprimer.addEventListener("click", enlever);
+        function enlever() {
+          let articlearetirer = canape._id;
+          console.log(articlearetirer);
+          panierFinal = panierFinal.filter(
+            //le panier final est égal  à l'inverse du produit à retirer filtré
+            (produit) => produit._id !== articlearetirer
+          );
+          console.log(panierFinal);
+
+          localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
+          // let articlearetirer_id = canapeFinal._id;
+          // let articlearetirercolor = canape.color;
+          // console.log(articlearetirer_id);
+          // console.log(articlearetirercolor);
+          // produit._id &&
+          // produit.color !== articlearetirer_id &&
+          // articlearetirercolor
+        }
       }
     });
   });
