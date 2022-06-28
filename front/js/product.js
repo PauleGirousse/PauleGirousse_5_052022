@@ -122,7 +122,4 @@ function ajout() {
     localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
     console.log(ancienPanier);
   }
-  // for (article of ancienPanier) {
-  //   if (article._id == )
-  // };
 }

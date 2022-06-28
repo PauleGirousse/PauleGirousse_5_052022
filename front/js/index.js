@@ -36,8 +36,6 @@ promise01.then((response) => {
     .then((data) => {
       console.log(data);
 
-      // for (let canape of data) {
-      //   console.log(canape);
       // création de la boucle et de ces balises pour chaque élément
       for (i = 0; i < data.length; i++) {
         const newA = document.createElement("a");
@@ -60,9 +58,9 @@ promise01.then((response) => {
         newImage.setAttribute("src", data[i].imageUrl); //récupération de la photo
         newImage.setAttribute("alt", data[i].altTxt); //récupération du texte alternatif
         newProductName.innerText = data[i].name; //récupération du nom du produit
-        newProductDescription.innerText = data[i].description; //récupération de la description du prduit
         // newA.setAttribute("href", "./product.html?");
         newA.setAttribute("href", "./product.html?" + "_id=" + newId);
+        newProductDescription.innerText = data[i].description; //récupération de la description du produit
         console.log(newA);
 
         // items.appendChild(newA).appendChild(newArticle);
