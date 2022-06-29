@@ -6,6 +6,11 @@ let article = {};
 let panierFinal = [];
 let canape = {};
 let canapeFinal = {};
+// Pour forcer le rechargement de la page
+function rechargement() {
+  location.reload();
+}
+
 if (panier === null) {
   //si le panier est vide
   alert("le panier est vide");
@@ -125,29 +130,28 @@ if (panier === null) {
 
         items.appendChild(article); //insertion dans le HTML
 
-        // input.addEventListener("change", newQuantity);
+        // Change la quantité de canapés
         input.addEventListener("change", newQuantity);
         function newQuantity() {
-          canape.quantity = this.value;
-          console.log(canape.quantity);
-          console.log(canapeFinal._id);
+          canapeFinal.quantity = this.value;
+          console.log(canapeFinal.quantity);
 
-          // panierFinal.removeItem(canape.quantity, this.value);
-          // console.log(panierFinal.canapeFinal.quantity);
-          // .JSON.stringify(lsPanier);
+          console.log(canapeFinal);
+          localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
         }
-        //supprime l'objet dans le tableau
+        //supprime l'article dans le panier
         supprimer.addEventListener("click", enlever);
         function enlever() {
           let articlearetirer = canape._id;
           console.log(articlearetirer);
           panierFinal = panierFinal.filter(
-            //le panier final est égal  à l'inverse du produit à retirer filtré
+            //le panier final est égal  à tout sauf l'article à retirer
             (produit) => produit._id !== articlearetirer
           );
           console.log(panierFinal);
 
           localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
+          rechargement();
           // let articlearetirer_id = canapeFinal._id;
           // let articlearetirercolor = canape.color;
           // console.log(articlearetirer_id);
