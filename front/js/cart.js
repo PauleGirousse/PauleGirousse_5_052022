@@ -6,9 +6,17 @@ let article = {};
 let panierFinal = [];
 let canape = {};
 let canapeFinal = {};
+// let nbCanape = [];
+
 // Pour forcer le rechargement de la page
 function rechargement() {
   location.reload();
+}
+
+// recupere le panier depuis le localstorage et met à jour le dom
+function MAJpanierFinal() {
+  let MAJpanierFinal = JSON.parse(localStorage.getItem("lsPanier"));
+  console.log(MAJpanierFinal);
 }
 
 if (panier === null) {
@@ -20,10 +28,10 @@ if (panier === null) {
     //pour les canapes du panier, création  des différents articles suivant leur id et leur couleur
     article = document.createElement("article");
     article.classList.add("cart__item");
-    article.innerHTML;
+
     article.setAttribute("data-id", canape._id);
     article.setAttribute("data-color", canape.color);
-    // console.log(canape);
+    console.log(canape);
   }
   const promise01 = fetch("http://localhost:3000/api/products"); // appel de l'API pour récupérer tous les attributs des canapés
   promise01.then((response) => {
@@ -47,29 +55,29 @@ if (panier === null) {
           price: rechercheProduitApi.price,
           quantity: canape.quantity,
         };
-        // console.log(canapeFinal);
-        panierFinal.push(canapeFinal); // insertion dans le panier final des canapés combinés
-        // console.log(panierFinal);
+        // insertion dans le panier final des canapés combinés
+        panierFinal.push(canapeFinal);
 
-        let cart__item__img = document.createElement("div"); // Création de l'affichage dynamique du panier
+        // Création de l'affichage dynamique du panier
+        let cart__item__img = document.createElement("div");
         cart__item__img.classList.add("cart__item__img");
-        cart__item__img.innerHTML;
+
         article.appendChild(cart__item__img);
 
         let img = document.createElement("img");
         img.setAttribute("src", canapeFinal.imageUrl);
         img.setAttribute("alt", canapeFinal.altTxt);
-        img.innerHTML;
+
         cart__item__img.appendChild(img);
 
         let cart__item__content = document.createElement("div");
         cart__item__content.classList.add("cart__item__content");
-        cart__item__content.innerHTML;
+
         article.appendChild(cart__item__content);
 
         let description = document.createElement("div");
         description.classList.add("cart__item__content__description");
-        description.innerHTML;
+
         cart__item__content.appendChild(description);
 
         let nom = document.createElement("h2");
@@ -86,7 +94,7 @@ if (panier === null) {
         cart__item__content__settings.classList.add(
           "cart__item__content__settings"
         );
-        cart__item__content__settings.innerHTML;
+
         cart__item__content.appendChild(cart__item__content__settings);
 
         let cart__item__content__settings__quantity =
@@ -94,7 +102,7 @@ if (panier === null) {
         cart__item__content__settings__quantity.classList.add(
           "cart__item__content__settings__quantity"
         );
-        cart__item__content__settings__quantity.innerHTML;
+
         cart__item__content__settings.appendChild(
           cart__item__content__settings__quantity
         );
@@ -110,7 +118,7 @@ if (panier === null) {
         input.setAttribute("min", "1");
         input.setAttribute("max", "100");
         input.setAttribute("value", canapeFinal.quantity);
-        input.innerHTML;
+
         cart__item__content__settings__quantity.appendChild(input);
 
         let cart__item__content__settings__delete =
@@ -118,52 +126,101 @@ if (panier === null) {
         cart__item__content__settings__delete.classList.add(
           "cart__item__content__settings__delete"
         );
-        cart__item__content__settings__delete.innerHTML;
+
         cart__item__content__settings.appendChild(
           cart__item__content__settings__delete
         );
 
-        let supprimer = document.createElement("p");
-        supprimer.classList.add("deleteItem");
-        supprimer.innerText = "Supprimer";
-        cart__item__content__settings__delete.appendChild(supprimer);
+        let deleteItem = document.createElement("p");
+        deleteItem.classList.add("deleteItem");
+        deleteItem.innerText = "Supprimer";
+        cart__item__content__settings__delete.appendChild(deleteItem);
+        //insertion dans le HTML
+        items.appendChild(article);
 
-        items.appendChild(article); //insertion dans le HTML
+        // Changer la quantité de canapés
+        input.addEventListener("change", changeQuantity);
+        function changeQuantity() {
+          canapeFinal.quantity = parseInt(this.value);
 
-        // Change la quantité de canapés
-        input.addEventListener("change", newQuantity);
-        function newQuantity() {
-          canapeFinal.quantity = this.value;
           console.log(canapeFinal.quantity);
-
-          console.log(canapeFinal);
+          console.log(panier);
           localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
-        }
-        //supprime l'article dans le panier
-        supprimer.addEventListener("click", enlever);
-        function enlever() {
-          let articlearetirer = canape._id;
-          console.log(articlearetirer);
-          panierFinal = panierFinal.filter(
-            //le panier final est égal  à tout sauf l'article à retirer
-            (produit) => produit._id !== articlearetirer
-          );
-          console.log(panierFinal);
-
-          localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
-          rechargement();
-          // let articlearetirer_id = canapeFinal._id;
-          // let articlearetirercolor = canape.color;
-          // console.log(articlearetirer_id);
-          // console.log(articlearetirercolor);
-          // produit._id &&
-          // produit.color !== articlearetirer_id &&
-          // articlearetirercolor
+          // MAJpanierFinal();
         }
       }
+      // debugger;
+      //supprime l'article dans le panier
+
+      // let supprimer = document.querySelector("deleteItem");
+      // console.log(supprimer);
+      // supprimer.addEventListener("click", supprimerarticle);
+      // function supprimerarticle() {
+      //   //   let rangArticle = supprimer.closest("article");
+      //   //   console.log(rangArticle);
+      //   //   let articlearetirer =
+      //   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
+      //   //   console.log(articlearetirer);
+      // }
+
+      // supprimerarticle();
+      // panierFinal = panierFinal.filter(
+      //   //le panier final est égal  à tout sauf l'article à retirer
+      //   (produit) => produit._id && produit.color !== articlearetirer
+      // );
+      // panierFinal = panierFinal.filter(
+      //   //le panier final est égal  à tout sauf l'article à retirer
+      //   (produit) => produit._id && produit.color !== articleaenlever
+      // );
+      // console.log(panierFinal);
+      // // rechargement(); //mettre à jour la page panier
+      // localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
+      // MAJpanierFinal();
+      // rechargement();
+      // panierFinal = JSON.parse(localStorage.getItem("lsPanier", panierFinal));
+      let totalQuantity = document.querySelector("#totalQuantity");
+      let totalPrice = document.querySelector("totalPrice");
+      // console.log(totalPrice);
+      let prixCanapes = 0;
+      let totalNbCanapes = 0;
+
+      const quantityArray = panierFinal.map((item) => item.quantity);
+
+      console.log(quantityArray);
+
+      for (let i = 0; i < quantityArray.length; i++) {
+        totalNbCanapes += quantityArray[i];
+      }
+      console.log(totalNbCanapes);
+      totalQuantity.innerText = totalNbCanapes;
+      localStorage.setItem("lsTotalQuantity", JSON.stringify(totalNbCanapes));
+
+      let canapePrice = canapeFinal.price * canapeFinal.quantity;
+      console.log(typeof canapePrice);
+
+      let PriceArray = [];
+      PriceArray.push(canapePrice);
+      console.log(PriceArray);
+
+      //   let nbCanape = parseInt(canapeFinal.quantity);
+      //   totalNbCanapes += nbCanape;
+      //   // console.log(totalNbCanapes);
+      //   localStorage.setItem("lsTotalQuantity", JSON.stringify(totalNbCanapes));
+      //   totalQuantity.innerText = totalNbCanapes;
+
+      //   prixCanapes += canapePrice;
+      //   console.log(prixCanapes);
+      //   localStorage.setItem("lsTotalPrice", JSON.stringify(prixCanapes));
+      // }
+      // totalPrice.innerText = prixCanapes;
+
+      // console.log(prixTotalcanape);
+
+      // console.log(totalPrice);
+      // canapeFinal.price = parseInt(canapeFinal.price, 10); //pour additionner, conversion de string en number
     });
   });
 }
+// totalPrice.innerText;
 
-// let totalArticles = document.createElement("totalQuantity");
-// let totalPrix = document.createElement("totalPrice");
+// panierFinal = JSON.parse(localStorage.setItem("lsPanier", panierFinal));
