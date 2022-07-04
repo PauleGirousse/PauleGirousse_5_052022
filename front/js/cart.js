@@ -7,7 +7,6 @@ let panierFinal = [];
 let canape = {};
 let canapeFinal = {};
 // let nbCanape = [];
-
 // Pour forcer le rechargement de la page
 function rechargement() {
   location.reload();
@@ -24,15 +23,6 @@ if (panier === null) {
   alert("le panier est vide");
 } else {
   //si le panier n'est pas vide
-  for (canape of panier) {
-    //pour les canapes du panier, création  des différents articles suivant leur id et leur couleur
-    article = document.createElement("article");
-    article.classList.add("cart__item");
-
-    article.setAttribute("data-id", canape._id);
-    article.setAttribute("data-color", canape.color);
-    console.log(canape);
-  }
   const promise01 = fetch("http://localhost:3000/api/products"); // appel de l'API pour récupérer tous les attributs des canapés
   promise01.then((response) => {
     console.log(response);
@@ -40,11 +30,20 @@ if (panier === null) {
     canapes.then((data) => {
       // console.log(data);
       for (canape of panier) {
+        //pour les canapes du panier, création  des différents articles suivant leur id et leur couleur
+        article = document.createElement("article");
+        article.classList.add("cart__item");
+
+        article.setAttribute("data-id", canape._id);
+        article.setAttribute("data-color", canape.color);
+        console.log(canape);
+
         // boucle sur les canapés du panier pour rechercher le même id dans les canapés de l'API
         let rechercheProduitApi = data.find(
           (produit) => produit._id === canape._id
         );
         // console.log(rechercheProduitApi);
+
         //création de l'article combiné des attributs de l'API et du panier
         let canapeFinal = {
           _id: canape._id,
@@ -57,7 +56,6 @@ if (panier === null) {
         };
         // insertion dans le panier final des canapés combinés
         panierFinal.push(canapeFinal);
-
         // Création de l'affichage dynamique du panier
         let cart__item__img = document.createElement("div");
         cart__item__img.classList.add("cart__item__img");
@@ -144,83 +142,99 @@ if (panier === null) {
           canapeFinal.quantity = parseInt(this.value);
 
           console.log(canapeFinal.quantity);
+          console.log(canapeFinal);
+          //dans le DOM
+          let inp = document.querySelector("input");
+          let rangArticle = inp.closest("article");
+          console.log(rangArticle);
+          rangArticle.dataset.quantity = canapeFinal.quantity;
+          //dans le localstorage
+          canape.quantity = canapeFinal.quantity;
           console.log(panier);
-          localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
+          localStorage.setItem("lsPanier", JSON.stringify(panier));
+          // let item = document.querySelector("cart_item");
+          // console.log(item.$(data.id));
+          // item.dataset.quantity.value = canapeFinal.quantity;
+          // console.log(item.dataset.quantity.value);
+          // localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
           // MAJpanierFinal();
         }
       }
-      // debugger;
-      //supprime l'article dans le panier
-
-      // let supprimer = document.querySelector("deleteItem");
-      // console.log(supprimer);
-      // supprimer.addEventListener("click", supprimerarticle);
-      // function supprimerarticle() {
-      //   //   let rangArticle = supprimer.closest("article");
-      //   //   console.log(rangArticle);
-      //   //   let articlearetirer =
-      //   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
-      //   //   console.log(articlearetirer);
-      // }
-
-      // supprimerarticle();
-      // panierFinal = panierFinal.filter(
-      //   //le panier final est égal  à tout sauf l'article à retirer
-      //   (produit) => produit._id && produit.color !== articlearetirer
-      // );
-      // panierFinal = panierFinal.filter(
-      //   //le panier final est égal  à tout sauf l'article à retirer
-      //   (produit) => produit._id && produit.color !== articleaenlever
-      // );
-      // console.log(panierFinal);
-      // // rechargement(); //mettre à jour la page panier
-      // localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
-      // MAJpanierFinal();
-      // rechargement();
-      // panierFinal = JSON.parse(localStorage.getItem("lsPanier", panierFinal));
-      let totalQuantity = document.querySelector("#totalQuantity");
-      let totalPrice = document.querySelector("totalPrice");
-      // console.log(totalPrice);
-      let prixCanapes = 0;
-      let totalNbCanapes = 0;
-
-      const quantityArray = panierFinal.map((item) => item.quantity);
-
-      console.log(quantityArray);
-
-      for (let i = 0; i < quantityArray.length; i++) {
-        totalNbCanapes += quantityArray[i];
-      }
-      console.log(totalNbCanapes);
-      totalQuantity.innerText = totalNbCanapes;
-      localStorage.setItem("lsTotalQuantity", JSON.stringify(totalNbCanapes));
-
-      let canapePrice = canapeFinal.price * canapeFinal.quantity;
-      console.log(typeof canapePrice);
-
-      let PriceArray = [];
-      PriceArray.push(canapePrice);
-      console.log(PriceArray);
-
-      //   let nbCanape = parseInt(canapeFinal.quantity);
-      //   totalNbCanapes += nbCanape;
-      //   // console.log(totalNbCanapes);
-      //   localStorage.setItem("lsTotalQuantity", JSON.stringify(totalNbCanapes));
-      //   totalQuantity.innerText = totalNbCanapes;
-
-      //   prixCanapes += canapePrice;
-      //   console.log(prixCanapes);
-      //   localStorage.setItem("lsTotalPrice", JSON.stringify(prixCanapes));
-      // }
-      // totalPrice.innerText = prixCanapes;
-
-      // console.log(prixTotalcanape);
-
-      // console.log(totalPrice);
-      // canapeFinal.price = parseInt(canapeFinal.price, 10); //pour additionner, conversion de string en number
     });
   });
 }
+
+let totalQuantity = document.querySelector("#totalQuantity");
+let totalPrice = document.querySelector("totalPrice");
+// console.log(totalPrice);
+let prixCanapes = 0;
+let totalNbCanapes = 0;
+
+const quantityArray = panierFinal.map((item) => item.quantity);
+
+console.log(quantityArray);
+
+for (let i = 0; i < quantityArray.length; i++) {
+  totalNbCanapes += quantityArray[i];
+}
+console.log(totalNbCanapes);
+totalQuantity.innerText = totalNbCanapes;
+localStorage.setItem("lsTotalQuantity", JSON.stringify(totalNbCanapes));
+
+let canapePrice = canapeFinal.price * canapeFinal.quantity;
+console.log(typeof canapePrice);
+
+let PriceArray = [];
+PriceArray.push(canapePrice);
+console.log(PriceArray);
+
+//   let nbCanape = parseInt(canapeFinal.quantity);
+//   totalNbCanapes += nbCanape;
+//   // console.log(totalNbCanapes);
+//   localStorage.setItem("lsTotalQuantity", JSON.stringify(totalNbCanapes));
+//   totalQuantity.innerText = totalNbCanapes;
+
+//   prixCanapes += canapePrice;
+//   console.log(prixCanapes);
+//   localStorage.setItem("lsTotalPrice", JSON.stringify(prixCanapes));
+// }
+// totalPrice.innerText = prixCanapes;
+
+// console.log(prixTotalcanape);
+
+// console.log(totalPrice);
+// canapeFinal.price = parseInt(canapeFinal.price, 10); //pour additionner, conversion de string en number
+
 // totalPrice.innerText;
+
+// debugger;
+//supprime l'article dans le panier
+
+// let supprimer = document.querySelector("deleteItem");
+// console.log(supprimer);
+// supprimer.addEventListener("click", supprimerarticle);
+// function supprimerarticle() {
+//   //   let rangArticle = supprimer.closest("article");
+//   //   console.log(rangArticle);
+//   //   let articlearetirer =
+//   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
+//   //   console.log(articlearetirer);
+// }
+
+// supprimerarticle();
+// panierFinal = panierFinal.filter(
+//   //le panier final est égal  à tout sauf l'article à retirer
+//   (produit) => produit._id && produit.color !== articlearetirer
+// );
+// panierFinal = panierFinal.filter(
+//   //le panier final est égal  à tout sauf l'article à retirer
+//   (produit) => produit._id && produit.color !== articleaenlever
+// );
+// console.log(panierFinal);
+// // rechargement(); //mettre à jour la page panier
+// localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
+// MAJpanierFinal();
+// rechargement();
+// panierFinal = JSON.parse(localStorage.getItem("lsPanier", panierFinal));
 
 // panierFinal = JSON.parse(localStorage.setItem("lsPanier", panierFinal));
