@@ -14,13 +14,11 @@ function upDateQuantity(id, color, quantity) {
   let article = {
     _id: id,
     color: color,
-    quantity: quantity, //pour additionner, conversion de string en number
+    quantity: quantity,
   };
 
-  // Si le panier contient déja des articles
-
+  //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
   let recherchearticleidentique = ancienPanier.find(
-    //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
     (produit) => produit._id === article._id && produit.color === article.color
   );
   // console.log(recherchearticleidentique);
@@ -33,7 +31,36 @@ function upDateQuantity(id, color, quantity) {
   console.log(panierFinal);
   localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
 }
+function upDateItems(id, color) {
+  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //conversion du panier Json en javascript
 
+  let deleteArticle = {
+    _id: id,
+    color: color,
+  };
+  console.log(deleteArticle);
+  console.log(panier);
+  let recherchearticleidentique = panierFinal.find(
+    //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
+    (produit) =>
+      produit._id === deleteArticle._id && produit.color === deleteArticle.color
+  );
+  console.log(recherchearticleidentique);
+  //le panier final est égal  à tout sauf l'article à retirer
+  panierFinal = panierFinal.filter(
+    (produit) => produit !== recherchearticleidentique
+  );
+  console.log(panierFinal);
+
+  let rechercheLsArticleIdentique = panier.find(
+    (produit) =>
+      produit._id === deleteArticle._id && produit.color === deleteArticle.color
+  );
+  console.log(rechercheLsArticleIdentique);
+  panier = panier.filter((produit) => produit !== rechercheLsArticleIdentique);
+  console.log(panier);
+  updateLsPanier();
+}
 // récupère le panier depuis le localstorage et met à jour le dom
 function getLsPanier() {
   let updatepanier = JSON.parse(localStorage.getItem("lsPanier"));
@@ -165,62 +192,37 @@ if (panier === null) {
           //insertion dans le HTML
           items.appendChild(article);
 
-          // Changer la quantité de canapés
-          // let inp = document.querySelector("input");
+          // Changer la quantité de l'objet canapé
 
           input.addEventListener("change", changeQuantity);
           function changeQuantity() {
-            let rangArticle = input.closest("article");
+            let rowArticle = input.closest("article");
 
-            console.log(rangArticle.dataset.id);
+            console.log(rowArticle.dataset.id);
             upDateQuantity(
-              rangArticle.dataset.id,
-              rangArticle.dataset.color,
+              rowArticle.dataset.id,
+              rowArticle.dataset.color,
               parseInt(this.value)
             );
             canapeFinal.quantity = parseInt(this.value);
-
-            // item.dataset.quantity.value = canapeFinal.quantity;
-            // ajouteraupanier.addEventListener("click", ajout);
-
-            // canape.quantity = canapeFinal.quantity;
-            // console.log(canape.quantity);
-            // console.log(panier);
-            // updateLsPanier();
-            // function changeQuantity() {
-            //   let rangArticle = inp.closest("article");
-            //   console.log(rangArticle);
-            // e.target._id = canape._id;
-            // e.target.color = canape.color;
-            // canape.quantity = parseInt(this.value);
-            // console.log(canape);
-
-            //   canape.quantity = canapeFinal.quantity;
-
-            //   totalNbCanapes += nbCanape;
-            //   console.log(totalNbCanapes);
-            //   localStorage.setItem(
-            //     "lsTotalQuantity",
-            //     JSON.stringify(totalNbCanapes)
-            //   );
-            //   totalQuantity.innerText = totalNbCanapes;
             nbArticles();
             price();
-
-            //supprime l'article dans le panier
-
-            // let supprimer = document.querySelector("deleteItem");
-            // console.log(supprimer);
-            // supprimer.addEventListener("click", supprimerarticle);
-            // function supprimerarticle() {
-            //   //   let rangArticle = supprimer.closest("article");
-            //   //   console.log(rangArticle);
-            //   //   let articlearetirer =
-            //   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
-            //   //   console.log(articlearetirer);
-            // }
-            // updateLsPanier();
           }
+
+          deleteItem.addEventListener("click", removeItem);
+          function removeItem() {
+            let rowDeleteArticle = deleteItem.closest("article");
+
+            console.log(rowDeleteArticle.dataset.id);
+            console.log(rowDeleteArticle.dataset.color);
+
+            upDateItems(
+              rowDeleteArticle.dataset.id,
+              rowDeleteArticle.dataset.color
+            );
+            nbArticles();
+          }
+          price();
           // let products = [];
 
           //récupérer l'ID des articles dans un tableau
@@ -229,7 +231,6 @@ if (panier === null) {
           //   console.log(products);
           // }
           // tab_Id();
-          updateLsPanier();
           // getLsPanier();
           //envoi du tableau des ID dans le localstorage
           // function upDateProduct_ID() {
@@ -239,7 +240,7 @@ if (panier === null) {
           //   );
           // }
           // upDateProduct_ID();
-
+          console.log(panier);
           //Affichage de la quantité des articles
           function nbArticles() {
             let totalNbCanapes = 0;
@@ -377,3 +378,38 @@ function valid(e) {
 // console.log(canapePrice);
 
 // /^[a-zA-Z0-9]+([a-zA-Z0-9éèêëîïàç,.°-]+)/;
+
+// item.dataset.quantity.value = canapeFinal.quantity;
+// ajouteraupanier.addEventListener("click", ajout);
+
+// canape.quantity = canapeFinal.quantity;
+// console.log(canape.quantity);
+// console.log(panier);
+// updateLsPanier();
+// function changeQuantity() {
+//   let rangArticle = inp.closest("article");
+//   console.log(rangArticle);
+// e.target._id = canape._id;
+// e.target.color = canape.color;
+// canape.quantity = parseInt(this.value);
+// console.log(canape);
+
+//   canape.quantity = canapeFinal.quantity;
+
+//   totalNbCanapes += nbCanape;
+//   console.log(totalNbCanapes);
+//   localStorage.setItem(
+//     "lsTotalQuantity",
+//     JSON.stringify(totalNbCanapes)
+//   );
+//   totalQuantity.innerText = totalNbCanapes;
+
+//supprime l'article dans le panier
+// console.log(supprimer);
+// function supprimerarticle() {
+//   //   console.log(rangArticle);
+//   //   let articlearetirer =
+//   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
+//   //   console.log(articlearetirer);
+// }
+// updateLsPanier();
