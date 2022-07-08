@@ -2,11 +2,37 @@ let items = document.getElementById("cart__items");
 let lsPanier = localStorage.getItem("lsPanier");
 let panier = JSON.parse(lsPanier);
 console.log(panier);
-let article = {};
 let panierFinal = [];
 let canape = {};
 let canapeFinal = {};
 let nbCanape = [];
+let article = {};
+
+function upDateQuantity(id, color, quantity) {
+  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //conversion du panier Json en javascript
+  //Création de l'objet article
+  let article = {
+    _id: id,
+    color: color,
+    quantity: quantity, //pour additionner, conversion de string en number
+  };
+
+  // Si le panier contient déja des articles
+
+  let recherchearticleidentique = ancienPanier.find(
+    //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
+    (produit) => produit._id === article._id && produit.color === article.color
+  );
+  // console.log(recherchearticleidentique);
+
+  console.log(recherchearticleidentique.quantity); //si il existe un article identique dans le panier
+  console.log(article.quantity);
+  recherchearticleidentique.quantity = article.quantity; //ajout de la quantité de l'article à l'article identique
+  console.log(recherchearticleidentique.quantity);
+
+  console.log(panierFinal);
+  localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+}
 
 // récupère le panier depuis le localstorage et met à jour le dom
 function getLsPanier() {
@@ -17,6 +43,7 @@ function getLsPanier() {
 function updateLsPanier() {
   let updateLsPanier = localStorage.setItem("lsPanier", JSON.stringify(panier));
 }
+
 if (panier === null) {
   //si le panier est vide
   alert("le panier est vide");
@@ -54,10 +81,6 @@ if (panier === null) {
             price: rechercheProduitApi.price,
             quantity: canape.quantity,
           };
-          // products = localStorage.setItem(
-          //   "lsProducts",
-          //   JSON.stringify(products)
-          // );
           // insertion dans le panier final des canapés complets
           panierFinal.push(canapeFinal);
 
@@ -143,16 +166,27 @@ if (panier === null) {
           items.appendChild(article);
 
           // Changer la quantité de canapés
-          let inp = document.querySelector("input");
+          // let inp = document.querySelector("input");
 
           input.addEventListener("change", changeQuantity);
           function changeQuantity() {
-            let rangArticle = inp.closest("article");
+            let rangArticle = input.closest("article");
+
+            console.log(rangArticle.dataset.id);
+            upDateQuantity(
+              rangArticle.dataset.id,
+              rangArticle.dataset.color,
+              parseInt(this.value)
+            );
             canapeFinal.quantity = parseInt(this.value);
-            canape.quantity = canapeFinal.quantity;
-            console.log(canape.quantity);
-            console.log(panier);
-            updateLsPanier();
+
+            // item.dataset.quantity.value = canapeFinal.quantity;
+            // ajouteraupanier.addEventListener("click", ajout);
+
+            // canape.quantity = canapeFinal.quantity;
+            // console.log(canape.quantity);
+            // console.log(panier);
+            // updateLsPanier();
             // function changeQuantity() {
             //   let rangArticle = inp.closest("article");
             //   console.log(rangArticle);
@@ -172,8 +206,39 @@ if (panier === null) {
             //   totalQuantity.innerText = totalNbCanapes;
             nbArticles();
             price();
+
+            //supprime l'article dans le panier
+
+            // let supprimer = document.querySelector("deleteItem");
+            // console.log(supprimer);
+            // supprimer.addEventListener("click", supprimerarticle);
+            // function supprimerarticle() {
+            //   //   let rangArticle = supprimer.closest("article");
+            //   //   console.log(rangArticle);
+            //   //   let articlearetirer =
+            //   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
+            //   //   console.log(articlearetirer);
+            // }
+            // updateLsPanier();
           }
+          // let products = [];
+
+          //récupérer l'ID des articles dans un tableau
+          // function tab_Id() {
+          //   products = panier.map((item) => item._id);
+          //   console.log(products);
+          // }
+          // tab_Id();
           updateLsPanier();
+          // getLsPanier();
+          //envoi du tableau des ID dans le localstorage
+          // function upDateProduct_ID() {
+          //   products = localStorage.setItem(
+          //     "lsProduct_Id",
+          //     JSON.stringify(products)
+          //   );
+          // }
+          // upDateProduct_ID();
 
           //Affichage de la quantité des articles
           function nbArticles() {
@@ -218,10 +283,6 @@ if (panier === null) {
     );
   });
 }
-//recuperer l'ID des articles dans un tableau pour le POST
-let products = panier.map((item) => item._id);
-
-console.log(products);
 
 let order = document.querySelector("#order");
 let lsFormulaire = {};
@@ -237,7 +298,7 @@ let lastName_m = document.querySelector("#lastNameErrorMsg");
 let lastName_v = /^[a-zA-Zéèîï]+([[a-zA-Zéèëêïîàç]+)/;
 let address = document.querySelector("#address");
 let address_m = document.querySelector("#addressErrorMsg");
-let address_v = /^[a-zA-Z0-9]+[a-zA-Z0-9éèêëîïàç,.°-]+/;
+let address_v = /^([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5}) ?([a-zA-Z]*)/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");
 let city_v = /^[0-9]{5}/;
@@ -245,11 +306,11 @@ let email = document.querySelector("#email");
 let email_m = document.querySelector("#emailErrorMsg");
 let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}/;
 
-let jsonBody = [
-  products,
-  (contact = JSON.parse(localStorage.getItem("lsFormulaire"))),
-];
-console.log(jsonBody);
+// let jsonBody = [
+//   products,
+//   (contact = JSON.parse(localStorage.getItem("lsFormulaire"))),
+// ];
+// console.log(jsonBody);
 
 order.addEventListener("click", valid);
 function valid(e) {
@@ -263,67 +324,49 @@ function valid(e) {
   };
   if (firstName_v.test(firstName.value) === false) {
     firstName_m.innerText = error;
-
     console.log(firstName_m);
   } else if (lastName_v.test(lastName.value) === false) {
     lastName_m.innerText = error;
+    console.log(lastName_m);
   } else if (address_v.test(address.value) === false) {
     address_m.innerText = error;
+    console.log(address_m);
   } else if (city_v.test(city.value) === false) {
     city_m.innerText = error;
+    console.log(city_m);
   } else if (email_v.test(email.value) === false) {
     email_m.innerText = error;
+    console.log(email_m);
   } else {
     lsFormulaire = localStorage.setItem(
       "lsFormulaire",
       JSON.stringify(formulaire)
     );
   }
-  fetch("http://localhost:3000/api/products", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(jsonBody),
-  });
+  // fetch("http://localhost:3000/api/users", {
+  //   method: "POST",
+  //   headers: {
+  //     Accept: "application/json",
+  //     "Content-type": "application/json",
+  //   },
+  //   body: JSON.stringify(jsonBody),
+  // });
 }
-
-//supprime l'article dans le panier
-
-// let supprimer = document.querySelector("deleteItem");
-// console.log(supprimer);
-// supprimer.addEventListener("click", supprimerarticle);
-// function supprimerarticle() {
-//   //   let rangArticle = supprimer.closest("article");
-//   //   console.log(rangArticle);
-//   //   let articlearetirer =
-//   //     rangArticle.canape._id && rangArticle.canape.color; //sélectionné par son Id et sa couleur
-//   //   console.log(articlearetirer);
-// }
 
 // supprimerarticle();
 // panierFinal = panierFinal.filter(
 //   //le panier final est égal  à tout sauf l'article à retirer
 //   (produit) => produit._id && produit.color !== articlearetirer
 // );
-// panierFinal = panierFinal.filter(
-//   //le panier final est égal  à tout sauf l'article à retirer
-//   (produit) => produit._id && produit.color !== articleaenlever
-// );
+
 // console.log(panierFinal);
-// // rechargement(); //mettre à jour la page panier
+///mettre à jour la page panier
 // localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
 // MAJpanierFinal();
 // rechargement();
 // panierFinal = JSON.parse(localStorage.getItem("lsPanier", panierFinal));
 
-// panierFinal = JSON.parse(localStorage.setItem("lsPanier", panierFinal));
-
 // localStorage.setItem("lsPanier", JSON.stringify(panier));
-// let item = document.querySelector("cart_item");
-// console.log(item.$(data.id));
-// item.dataset.quantity.value = canapeFinal.quantity;
 // console.log(item.dataset.quantity.value);
 // localStorage.setItem("lsPanier", JSON.stringify(panierFinal)); //envoi du nouveau panier dans le localstorage
 // MAJpanierFinal();
@@ -332,3 +375,5 @@ function valid(e) {
 //   console.log(panierFinal);
 // let canapePrice = canapeFinal.price * canapeFinal.quantity;
 // console.log(canapePrice);
+
+// /^[a-zA-Z0-9]+([a-zA-Z0-9éèêëîïàç,.°-]+)/;
