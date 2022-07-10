@@ -1,15 +1,17 @@
 let items = document.getElementById("cart__items");
 let lsPanier = localStorage.getItem("lsPanier");
 let panier = JSON.parse(lsPanier);
-console.log(panier);
+
 let panierFinal = [];
 let canape = {};
 let canapeFinal = {};
 let nbCanape = [];
 let article = {};
+let products = [];
 
 function upDateQuantity(id, color, quantity) {
   let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //conversion du panier Json en javascript
+
   //Création de l'objet article
   let article = {
     _id: id,
@@ -21,7 +23,6 @@ function upDateQuantity(id, color, quantity) {
   let recherchearticleidentique = ancienPanier.find(
     (produit) => produit._id === article._id && produit.color === article.color
   );
-  // console.log(recherchearticleidentique);
 
   console.log(recherchearticleidentique.quantity); //si il existe un article identique dans le panier
   console.log(article.quantity);
@@ -38,19 +39,19 @@ function upDateItems(id, color) {
     _id: id,
     color: color,
   };
-  console.log(deleteArticle);
-  console.log(panier);
+  // console.log(deleteArticle);
+  // console.log(panier);
+  //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
   let recherchearticleidentique = panierFinal.find(
-    //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
     (produit) =>
       produit._id === deleteArticle._id && produit.color === deleteArticle.color
   );
-  console.log(recherchearticleidentique);
+  // console.log(recherchearticleidentique);
   //le panier final est égal  à tout sauf l'article à retirer
   panierFinal = panierFinal.filter(
     (produit) => produit !== recherchearticleidentique
   );
-  console.log(panierFinal);
+  // console.log(panierFinal);
 
   let rechercheLsArticleIdentique = panier.find(
     (produit) =>
@@ -60,6 +61,7 @@ function upDateItems(id, color) {
   panier = panier.filter((produit) => produit !== rechercheLsArticleIdentique);
   console.log(panier);
   updateLsPanier();
+  location.reload();
 }
 // récupère le panier depuis le localstorage et met à jour le dom
 function getLsPanier() {
@@ -223,24 +225,16 @@ if (panier === null) {
             nbArticles();
           }
           price();
-          // let products = [];
 
-          //récupérer l'ID des articles dans un tableau
-          // function tab_Id() {
-          //   products = panier.map((item) => item._id);
-          //   console.log(products);
-          // }
-          // tab_Id();
-          // getLsPanier();
-          //envoi du tableau des ID dans le localstorage
-          // function upDateProduct_ID() {
-          //   products = localStorage.setItem(
-          //     "lsProduct_Id",
-          //     JSON.stringify(products)
-          //   );
-          // }
-          // upDateProduct_ID();
+          // Récupérer l'Id des articles dans un tableau
+
+          function creationtableauproductId() {
+            products = panier.map((item) => item._id);
+          }
+          creationtableauproductId();
+
           console.log(panier);
+
           //Affichage de la quantité des articles
           function nbArticles() {
             let totalNbCanapes = 0;
@@ -258,6 +252,7 @@ if (panier === null) {
             }
           }
           nbArticles();
+
           // Affichage du prix total
 
           function price() {
@@ -286,7 +281,7 @@ if (panier === null) {
 }
 
 let order = document.querySelector("#order");
-let lsFormulaire = {};
+let lsContact = {};
 let domFormulaire = {};
 let error = "Format incorrect";
 let firstName = document.querySelector("#firstName");
@@ -299,7 +294,7 @@ let lastName_m = document.querySelector("#lastNameErrorMsg");
 let lastName_v = /^[a-zA-Zéèîï]+([[a-zA-Zéèëêïîàç]+)/;
 let address = document.querySelector("#address");
 let address_m = document.querySelector("#addressErrorMsg");
-let address_v = /^([0-9]*) ?([a-zA-Z,\. ]*) ?([0-9]{5}) ?([a-zA-Z]*)/;
+let address_v = /^([0-9]*) ?([a-zA-Z,\. ]*) ?([a-zA-Z]*)/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");
 let city_v = /^[0-9]{5}/;
@@ -307,16 +302,20 @@ let email = document.querySelector("#email");
 let email_m = document.querySelector("#emailErrorMsg");
 let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}/;
 
-// let jsonBody = [
-//   products,
-//   (contact = JSON.parse(localStorage.getItem("lsFormulaire"))),
-// ];
-// console.log(jsonBody);
+// let orderId = {
+//   orderId: panier.map((item) => item._id),
+// };
+// products = [orderId];
+
+// console.log(products);
+
+// // tab_Id();
+// getLsPanier();
 
 order.addEventListener("click", valid);
 function valid(e) {
   e.preventDefault();
-  let formulaire = {
+  let contact = {
     firstName: firstName.value,
     lastName: lastName.value,
     address: address.value,
@@ -339,19 +338,47 @@ function valid(e) {
     email_m.innerText = error;
     console.log(email_m);
   } else {
-    lsFormulaire = localStorage.setItem(
-      "lsFormulaire",
-      JSON.stringify(formulaire)
-    );
+    lsContact = localStorage.setItem("lsContact", JSON.stringify(contact));
+    contact = JSON.parse(localStorage.getItem("lsContact"));
+    let jsonBody = {
+      products,
+      contact,
+    };
+    console.log(jsonBody);
+
+    let promise = fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(jsonBody),
+    });
+    let orderId = {};
+    promise.then(async (response) => {
+      try {
+        const retourOrder = await response.json();
+        console.log(retourOrder);
+        if (response.ok) {
+          console.log(`resultat de response.ok: ${response.ok}`);
+          console.log(retourOrder.orderId);
+          function changepage() {
+            location.href = "./confirmation.html";
+          }
+          changepage();
+        } else {
+          alert(`Erreur du serveur: ${response.status}`);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    // envoi du tableau des ID dans le localstorage
+    // function upDateProduct_ID() {
+    //   products = localStorage.setItem("lsProduct_Id", JSON.stringify(products));
+    // }
+    // upDateProduct_ID();
   }
-  // fetch("http://localhost:3000/api/users", {
-  //   method: "POST",
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Content-type": "application/json",
-  //   },
-  //   body: JSON.stringify(jsonBody),
-  // });
 }
 
 // supprimerarticle();
