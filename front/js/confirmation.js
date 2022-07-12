@@ -3,3 +3,5 @@ console.log(order_Id);
 
 let orderId = document.querySelector("#orderId");
 orderId.innerText = order_Id;
+
+order_Id = localStorage.removeItem("_id");
