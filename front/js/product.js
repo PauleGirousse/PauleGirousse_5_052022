@@ -1,9 +1,10 @@
-//Récupération de l'url
+//******************************************************************       Récupération de l'url   *****************************************************//
+
 let params = new URLSearchParams(window.location.search);
 console.log(params);
-let idParams = params.get("_id"); //récupération de l'Id de l'article
+let idParams = params.get("_id"); //                                                                                      récupération de l'Id de l'article
 console.log(idParams);
-localStorage.setItem("_id", idParams); //Ajouter dans le localstorage et convertir en format JSON
+localStorage.setItem("_id", idParams); //                                                          Ajouter dans le localstorage et convertir en format JSON
 let api = `http://localhost:3000/api/products/`;
 let idApi = api + idParams;
 console.log(idApi);
@@ -13,10 +14,10 @@ let quantitySelect = document.querySelector("#quantity");
 let ajouteraupanier = document.querySelector("#addToCart");
 
 const canapes = async function () {
-  let response = await fetch(idApi); // appel reseau sur l'article de l'API
+  let response = await fetch(idApi); //                                                                                 appel reseau sur l'article de l'API
   if (response.ok) {
-    // si la reponse est ok
-    let data = await response.json(); // convertion au format JSON
+    //                                                                                                                                 si la reponse est ok
+    let data = await response.json(); //                                                                                         convertion au format JSON
     console.log(data);
     let item__img = document.querySelector(".item__img");
 
@@ -34,7 +35,7 @@ const canapes = async function () {
     let description = document.querySelector("#description");
     description.innerHTML = data.description;
 
-    //pour afficher toutes les couleurs de l'article
+    //**********************************************************  Affichage des différentes couleurs de l'article    ************************************//
     for (let color of data.colors) {
       let option = document.createElement("option");
       option.setAttribute("value", color);
@@ -86,40 +87,42 @@ canapes();
 
 ajouteraupanier.addEventListener("click", ajout);
 function ajout() {
-  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //conversion du panier Json en javascript
-  //Création de l'objet article
+  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //                                               conversion du panier Json en javascript
+
+  //********************************************************    Création de l'objet article  *******************************************//
   let article = {
     _id: idParams,
     color: colorSelect.options[colors.selectedIndex].value,
-    quantity: parseInt(quantitySelect.value, 10), //pour additionner, conversion de string en number
+    quantity: parseInt(quantitySelect.value, 10), //                                                      pour additionner, conversion de string en number
   };
 
-  // Si le panier contient déja des articles
+  //********************************************************           Si le panier contient déja des articles       ***********************************//
+
   if (ancienPanier) {
     let recherchearticleidentique = ancienPanier.find(
-      //recherche un produit identique dans le panier par son id et sa couleur qui doit être identique à celle de l'article
+      //                                                                            recherche un produit identique dans le panier par son id et sa couleur
       (produit) =>
         produit._id === article._id && produit.color === article.color
     );
-    // console.log(recherchearticleidentique);
+
     if (recherchearticleidentique == undefined) {
-      //si aucun article identique n'est trouvé, dépot de l'article dans le panier
+      //                                                                         si aucun article identique n'est trouvé, dépot de l'article dans le panier
       ancienPanier.push(article);
-      localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+      localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); //                                            conversion en JSON du panier mis à jour
       console.log(ancienPanier);
     } else {
-      console.log(recherchearticleidentique.quantity); //si il existe un article identique dans le panier
+      console.log(recherchearticleidentique.quantity); //                                                  si il existe un article identique dans le panier
       console.log(article.quantity);
-      recherchearticleidentique.quantity += article.quantity; //ajout de la quantité de l'article à l'article identique
+      recherchearticleidentique.quantity += article.quantity; //                                    ajout de la quantité de l'article à l'article identique
       console.log(recherchearticleidentique.quantity);
-      localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+      localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); //                                            conversion en JSON du panier mis à jour
     }
   }
-  //Si le panier est vide
+  // **********************************************************             Si le panier est vide            *******************************************//
   else {
-    ancienPanier = []; //création du panier
-    ancienPanier.push(article); //dépot de l'article dans le panier
-    localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); // conversion en JSON du panier mis à jour
+    ancienPanier = [];
+    ancienPanier.push(article);
+    localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); //                                            conversion en JSON du panier mis à jour
     console.log(ancienPanier);
   }
 }

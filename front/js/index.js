@@ -1,32 +1,8 @@
 console.log("bonjour");
 
-//récupération des données de l'API dans la page index.html
+//**************************************************     Récupération des données de l'API dans la page index.html    **********************************//
 
-let items = document.getElementById("items"); //container de l'affichage produits dynamique
-
-// on fait un appel reseau vers la liste des canapés
-// fetch("http://localhost:3000/api/products")
-//   .then(function (response) {
-//     //on transforme les données recues en json
-//     return response.json();
-//   })
-//   .then(function (json) {
-//     //on stocke les données json dans une variable
-//     const canapes = json;
-//     console.log(json);
-
-//     //on boucle sur les canapés
-//     for (const canape of canapes) {
-//       //on recupere l'element dom par son id
-//       const element = document.querySelector("#test");
-//       //on remplace l'attribut href de cet element par celui qui vient du serveur
-//       element.setAttribute(
-//         "href",
-//         "http://localhost:3000/api/products/" + canape._id
-//       );
-//     }
-//   });
-// });
+let items = document.getElementById("items"); //                                                                container de l'affichage produits dynamique
 
 const promise01 = fetch("http://localhost:3000/api/products");
 promise01.then((response) => {
@@ -36,7 +12,7 @@ promise01.then((response) => {
     .then((data) => {
       console.log(data);
 
-      // création de la boucle et de ces balises pour chaque élément
+      //******************************************         Création de la boucle et de ces balises pour chaque élément         *************************//
       for (i = 0; i < data.length; i++) {
         const newA = document.createElement("a");
         let newArticle = document.createElement("article");
@@ -50,17 +26,16 @@ promise01.then((response) => {
         newArticle.appendChild(newProductDescription);
         newA.appendChild(newArticle);
         items.appendChild(newA);
-        // debugger;
 
-        //Modification des attributs et affichage sur la page avec l'incrémentation
+        //****************************************     Modification des attributs et affichage sur la page avec l'incrémentation   *********************//
         newId = data[i]._id;
         console.log(newId);
-        newImage.setAttribute("src", data[i].imageUrl); //récupération de la photo
-        newImage.setAttribute("alt", data[i].altTxt); //récupération du texte alternatif
-        newProductName.innerText = data[i].name; //récupération du nom du produit
+        newImage.setAttribute("src", data[i].imageUrl); //                                                                         récupération de la photo
+        newImage.setAttribute("alt", data[i].altTxt); //                                                                   récupération du texte alternatif
+        newProductName.innerText = data[i].name; //                                                                          récupération du nom du produit
         // newA.setAttribute("href", "./product.html?");
         newA.setAttribute("href", "./product.html?" + "_id=" + newId);
-        newProductDescription.innerText = data[i].description; //récupération de la description du produit
+        newProductDescription.innerText = data[i].description; //                                                 récupération de la description du produit
         console.log(newA);
 
         // items.appendChild(newA).appendChild(newArticle);
