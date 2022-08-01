@@ -1,11 +1,11 @@
 // ****************************************************    Récupération de l'ID de commande et affichage sur la page   **********************************//
-
-let order_Id = localStorage.getItem("_id");
-console.log(order_Id);
+let url = new URLSearchParams(window.location.search);
+console.log(url);
+let id = url.get("orderId");
+console.log(id);
 
 let orderId = document.querySelector("#orderId");
-orderId.innerText = order_Id;
+orderId.innerText = id;
 
-//*****************************************************   Suppression de l'ID de commande du localstorage    ********************************************//
-
-order_Id = localStorage.removeItem("_id");
+//*****************************************************   Suppression des données du localstorage    ********************************************//
+localStorage.removeItem("lsPanier");

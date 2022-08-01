@@ -9,10 +9,14 @@ let nbCanape = [];
 let article = {};
 let products = [];
 
-function upDateQuantity(id, color, quantity) {
-  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //                                               conversion du panier Json en javascript
+//Envoi du panier dans le localstorage
+function upDateLsPanier() {
+  localStorage.setItem("lsPanier", JSON.stringify(panier));
+}
 
-  //****************************************************************     Création de l'objet article   **************************************************//
+//Mise à jour de la quantité de l'article
+function upDateQuantity(id, color, quantity) {
+  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier"));
 
   let article = {
     _id: id,
@@ -20,37 +24,38 @@ function upDateQuantity(id, color, quantity) {
     quantity: quantity,
   };
 
-  //****************************************************     Recherche un produit identique dans le panier par son id et sa couleur   *******************//
-
+  //Recherche un produit identique dans le panier par son id et sa couleur
   let recherchearticleidentique = ancienPanier.find(
     (produit) => produit._id === article._id && produit.color === article.color
   );
-
-  console.log(recherchearticleidentique.quantity); //                                                      si il existe un article identique dans le panier
+  //si il existe un article identique dans le panier
+  console.log(recherchearticleidentique.quantity);
   console.log(article.quantity);
-  recherchearticleidentique.quantity = article.quantity; //                                         ajout de la quantité de l'article à l'article identique
+  //Ajout de la quantité de l'article à l'article identique
+  recherchearticleidentique.quantity = article.quantity;
   console.log(recherchearticleidentique.quantity);
 
   console.log(panierFinal);
-  localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); //                                                conversion en JSON du panier mis à jour
+
+  localStorage.setItem("lsPanier", JSON.stringify(ancienPanier)); //conversion en JSON du panier mis à jour
 }
+
+//  Suppression d'un article du panier
 function upDateItems(id, color) {
-  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); //                                               conversion du panier Json en javascript
+  // let ancienPanier = JSON.parse(localStorage.getItem("lsPanier")); // Conversion du panier Json en javascript
 
   let deleteArticle = {
     _id: id,
     color: color,
   };
 
-  //**********************************************     Recherche un produit identique dans le panier par son id et sa couleur    ************************//
-
+  //Recherche un produit identique dans le panier par son id et sa couleur
   let recherchearticleidentique = panierFinal.find(
     (produit) =>
       produit._id === deleteArticle._id && produit.color === deleteArticle.color
   );
 
-  //******************************************************    Le panier final est égal  à tout sauf l'article à retirer        **************************//
-
+  //Le panier final est égal  à tout sauf l'article à retirer
   panierFinal = panierFinal.filter(
     (produit) => produit !== recherchearticleidentique
   );
@@ -62,48 +67,37 @@ function upDateItems(id, color) {
   console.log(rechercheLsArticleIdentique);
   panier = panier.filter((produit) => produit !== rechercheLsArticleIdentique);
   console.log(panier);
-  updateLsPanier();
-  // location.reload();
-}
-//******************************************************    Récupère le panier depuis le localstorage et met à jour le dom  *****************************//
-
-function getLsPanier() {
-  let updatepanier = JSON.parse(localStorage.getItem("lsPanier"));
+  upDateLsPanier();
 }
 
-//****************************************************************    Envoi du panier dans le localstorage **********************************************//
+//*************************************Création/Mise à jour du panier   **************************************************//
 
-function updateLsPanier() {
-  let updateLsPanier = localStorage.setItem("lsPanier", JSON.stringify(panier));
-}
-
+//si le panier est vide
 if (panier === null) {
-  //*******************************************************************   si le panier est vide    ******************************************************//
   alert("le panier est vide");
-} else {
-  //*************************************************************    si le panier n'est pas vide    *****************************************************//
 
-  const promise01 = fetch("http://localhost:3000/api/products"); //                            appel de l'API pour récupérer tous les attributs des canapés
-  promise01.then((response) => {
+  //si le panier n'est pas vide
+} else {
+  //Appel de l'API pour récupérer tous les attributs des canapés
+  const promise = fetch("http://localhost:3000/api/products");
+  promise.then((response) => {
     console.log(response);
     const canapes = response.json();
     canapes.then((data) => {
       for (canape of panier) {
-        //                                                    pour les canapes du panier, création  des différents articles suivant leur id et leur couleur
+        //Pour les canapes du panier, création  des différents articles suivant leur id et leur couleur
         article = document.createElement("article");
         article.classList.add("cart__item");
 
         article.setAttribute("data-id", canape._id);
         article.setAttribute("data-color", canape.color);
 
-        //                                                            Boucle sur les canapés du panier pour rechercher le même id dans les canapés de l'API
-
+        //Boucle sur les canapés du panier pour rechercher le même id dans les canapés de l'API
         let rechercheProduitApi = data.find(
           (produit) => produit._id === canape._id
         );
 
-        //***************************************     Création de l'article combiné des attributs de l'API et du panier  ********************************//
-
+        //Création de l'article combiné des attributs de l'API et du panier
         let canapeFinal = {
           _id: canape._id,
           imageUrl: rechercheProduitApi.imageUrl,
@@ -114,11 +108,10 @@ if (panier === null) {
           quantity: canape.quantity,
         };
 
-        //**************************************************    Insertion dans le panier final des canapés complets *************************************//
-
+        //Insertion dans le panier final des canapés complets
         panierFinal.push(canapeFinal);
 
-        //*************************************************      Création de l'affichage dynamique du panier    *****************************************//
+        //Création de l'affichage dynamique du panier
 
         let cart__item__img = document.createElement("div");
         cart__item__img.classList.add("cart__item__img");
@@ -197,12 +190,12 @@ if (panier === null) {
         deleteItem.innerText = "Supprimer";
         cart__item__content__settings__delete.appendChild(deleteItem);
 
-        //************************************************************************   Insertion dans le HTML  ********************************************//
-
+        //Insertion dans le HTML
         items.appendChild(article);
 
-        //****************************************************************   Changer la quantité de l'objet canapé   ************************************//
+        //*************************************************     Changer la quantité de l'objet canapé   ************************************//
 
+        //Au clic sur l'input
         input.addEventListener("change", changeQuantity);
         function changeQuantity() {
           let rowArticle = input.closest("article");
@@ -217,7 +210,10 @@ if (panier === null) {
           nbArticles();
           price();
         }
-        //*******************************************************************************Supprimer****************** */
+
+        //***********************************************************************   Supprimer un article  *******************/
+
+        //Au clic sur "Supprimer"
         deleteItem.addEventListener("click", removeItem);
         function removeItem() {
           let rowDeleteArticle = deleteItem.closest("article");
@@ -231,20 +227,19 @@ if (panier === null) {
           );
           rowDeleteArticle.remove();
           nbArticles();
+          price();
+          upDateLsPanier();
         }
-        price();
 
-        //*******************************************************     Récupérer l'Id des articles dans un tableau   *************************************//
-
-        function creationtableauproductId() {
+        //Récupérer l'Id des articles dans un tableau
+        function arrayProductId() {
           products = panier.map((item) => item._id);
         }
-        creationtableauproductId();
+        arrayProductId();
 
         console.log(panier);
 
-        //********************************************************    Affichage de la quantité des articles   *******************************************//
-
+        //Affichage de la quantité des articles
         function nbArticles() {
           let totalNbCanapes = 0;
           let totalQuantity = document.querySelector("#totalQuantity");
@@ -258,10 +253,8 @@ if (panier === null) {
         }
         nbArticles();
 
-        //******************************************************   Affichage du prix total   ************************************************************//
-
+        //Affichage du prix total
         function price() {
-          // let canapePrice = 0;
           let priceArray = [];
           let total = 0;
           let totalPrice = document.querySelector("#totalPrice");
@@ -282,7 +275,7 @@ if (panier === null) {
   });
 }
 
-//**********************************************************************    REGEX     *******************************************************************//
+//**************************************************   REGEX     ****************//
 
 let order = document.querySelector("#order");
 let lsContact = {};
@@ -298,10 +291,10 @@ let lastName_m = document.querySelector("#lastNameErrorMsg");
 let lastName_v = /^[a-zA-Zéèîï]+([[a-zA-Zéèëêïîàç]+)/;
 let address = document.querySelector("#address");
 let address_m = document.querySelector("#addressErrorMsg");
-let address_v = /^([0-9]*) ?([a-zA-Z,\.\-]*) ?([a-zA-Z]*)/;
+let address_v = /([0-9]*) ([a-zA-Zéèêëîïàç'\,\.\-\s]*)+/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");
-let city_v = /^((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B))[0-9]{3}/;
+let city_v = /^(([0-8][0-9])|(9[0-5]))[0-9]{3}([a-zA-Zéèëêïîàç,.-]*)/;
 let email = document.querySelector("#email");
 let email_m = document.querySelector("#emailErrorMsg");
 let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}/;
@@ -310,7 +303,7 @@ let cart__order__form__question = document.querySelector(
   "cart__order__form__question"
 );
 
-//******************************************************************   Validation du PRENOM   ***********************************************************//
+//Validation du PRENOM
 
 firstName.addEventListener("change", firstNameValidate);
 function firstNameValidate() {
@@ -320,8 +313,6 @@ function firstNameValidate() {
   function isValid(firstName) {
     firstName_m.innerText = "";
   }
-  // if ((firstName.value = "")) {
-  //   firstName.placeholder = "Jean";
   if (firstName_v.test(firstName.value) === false) {
     notValid(firstName, "Veuillez entrer un Prénom");
     console.log("false");
@@ -331,7 +322,7 @@ function firstNameValidate() {
   }
 }
 
-//*******************************************************************   Validation du NOM    ************************************************************//
+//Validation du NOM
 
 lastName.addEventListener("change", lastNameValidate);
 function lastNameValidate() {
@@ -351,10 +342,10 @@ function lastNameValidate() {
   }
 }
 
-//********************************************************************************    Validation de l'ADRESSE   ****************************************//
+//Validation de l'ADRESSE
 
-address.addEventListener("change", adressValidate);
-function adressValidate() {
+address.addEventListener("change", addressValidate);
+function addressValidate() {
   function notValid(address, message) {
     address_m.innerText = message;
   }
@@ -371,7 +362,7 @@ function adressValidate() {
   }
 }
 
-//*****************************************************************************    Validation de la VILLE     *******************************************//
+//Validation de la VILLE
 
 city.addEventListener("change", cityValidate);
 function cityValidate() {
@@ -391,7 +382,7 @@ function cityValidate() {
   }
 }
 
-//*****************************************************************************   Validation de l'EMAIL     *********************************************//
+//Validation de l'EMAIL
 
 email.addEventListener("change", emailValidate);
 function emailValidate() {
@@ -413,6 +404,7 @@ function emailValidate() {
 
 //*********************************************************   Validation du formulaire et envoi dans le localstorage     ********************************//
 
+//Au clic sur "Commander!"
 order.addEventListener("click", valid);
 function valid(e) {
   e.preventDefault();
@@ -424,45 +416,11 @@ function valid(e) {
     email: email.value,
   };
 
-  if (
-    firstName_v.test(firstName) &&
-    lastName_v.test(lastName) &&
-    address_v.test(address) &&
-    city_v.test(city_v) &&
-    email_v.test(email_v)
-  ) {
-    lsContact = localStorage.setItem("lsContact", JSON.stringify(contact));
-    contact = JSON.parse(localStorage.getItem("lsContact"));
-  }
   let jsonBody = {
     products,
     contact,
   };
   console.log(jsonBody);
-
-  // if (firstName_v.test(firstName.value) === false) {
-  //   firstName_m.innerText = error;
-  //   console.log(firstName_m);
-  // } else if (lastName_v.test(lastName.value) === false) {
-  //   lastName_m.innerText = error;
-  //   console.log(lastName_m);
-  // } else if (address_v.test(address.value) === false) {
-  //   address_m.innerText = error;
-  //   console.log(address_m);
-  // } else if (city_v.test(city.value) === false) {
-  //   city_m.innerText = error;
-  //   console.log(city_m);
-  // } else if (email_v.test(email.value) === false) {
-  //   email_m.innerText = error;
-  //   console.log(email_m);
-  // } else if (firstName && lastName && address && city && email !== false) {
-  //   lsContact = localStorage.setItem("lsContact", JSON.stringify(contact));
-  //   contact = JSON.parse(localStorage.getItem("lsContact"));
-  //   let jsonBody = {
-  //     products,
-  //     contact,
-  //   };
-  //   console.log(jsonBody);
 
   //******************************************************************      requete POST et retour de l'ID de commande     ******************************//
 
@@ -482,10 +440,9 @@ function valid(e) {
       if (response.ok) {
         console.log(`resultat de response.ok: ${response.ok}`);
         console.log(retourOrder.orderId);
-        function changepage() {
-          location.href = "./confirmation.html";
-        }
-        changepage();
+
+        location.href =
+          "./confirmation.html?" + "orderId=" + retourOrder.orderId;
       } else {
         alert(`Erreur du serveur: ${response.status}`);
       }
@@ -493,11 +450,10 @@ function valid(e) {
       console.log(e);
     }
   });
-
-  //*******************************************************    Envoi du tableau des ID des articles dans le localstorage  *******************************//
-
-  function upDateProduct_ID() {
-    products = localStorage.setItem("lsProduct_Id", JSON.stringify(products));
-  }
-  upDateProduct_ID();
 }
+
+// //Récupération du panier depuis le localstorage et mise à jour du DOM
+// function getLsPanier() {
+//   let upDatePanier = JSON.parse(localStorage.getItem("lsPanier"));
+//   console.log(upDatePanier);
+// }
