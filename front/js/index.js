@@ -43,5 +43,5 @@ promise.then((response) => {
       }
     })
 
-    .catch((erreur) => console.log(erreur));
+    .catch((erreur) => alert(`Erreur du serveur: ${response.status}`));
 });

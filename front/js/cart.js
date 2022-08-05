@@ -1,11 +1,9 @@
 let items = document.getElementById("cart__items");
 let lsPanier = localStorage.getItem("lsPanier");
 let panier = JSON.parse(lsPanier);
-
 let panierFinal = [];
 let canape = {};
 let canapeFinal = {};
-let nbCanape = [];
 let article = {};
 let products = [];
 
@@ -21,7 +19,7 @@ function upDateDomPanier() {
 
 //****  Mise à jour de la quantité de l'article  ***//
 function upDateQuantity(id, color, quantity) {
-  let ancienPanier = JSON.parse(localStorage.getItem("lsPanier"));
+  ancienPanier = JSON.parse(localStorage.getItem("lsPanier"));
 
   let article = {
     _id: id,
@@ -48,12 +46,11 @@ function upDateItems(id, color) {
   };
 
   // Recherche un produit identique dans le panierFinal par son id et sa couleur
-  //pour pouvoir mettre à jour les prix
+  //pour pouvoir mettre à jour le prix total
   let recherchearticleidentique = panierFinal.find(
     (produit) =>
       produit._id === deleteArticle._id && produit.color === deleteArticle.color
   );
-
   // Le panier final est égal  à tout sauf l'article à retirer
   panierFinal = panierFinal.filter(
     (produit) => produit !== recherchearticleidentique
@@ -105,11 +102,10 @@ if (panier === null) {
           quantity: canape.quantity,
         };
 
-        // Insertion dans le panier final des canapés complets
+        // Insertion dans le panier final des articles complets
         panierFinal.push(canapeFinal);
 
         // Création de l'affichage dynamique du panier
-
         let cart__item__img = document.createElement("div");
         cart__item__img.classList.add("cart__item__img");
 
@@ -190,6 +186,34 @@ if (panier === null) {
         // Insertion dans le HTML
         items.appendChild(article);
 
+        // Affichage et calcul de la quantité des articles
+        function nbArticles() {
+          let totalNbCanapes = 0;
+          let totalQuantity = document.querySelector("#totalQuantity");
+          let quantityArray = panierFinal.map((item) => item.quantity);
+          for (let i = 0; i < quantityArray.length; i++) {
+            totalNbCanapes += quantityArray[i];
+            totalQuantity.innerText = totalNbCanapes;
+          }
+        }
+        nbArticles();
+
+        // Affichage et calcul du prix total
+        function price() {
+          let priceArray = [];
+          let total = 0;
+          let totalPrice = document.querySelector("#totalPrice");
+
+          panierFinal.forEach((canapeFinal) => {
+            let canapePrice = canapeFinal.price * canapeFinal.quantity;
+
+            priceArray.push(canapePrice);
+            total += canapePrice;
+            totalPrice.innerText = total.toFixed(2);
+          });
+        }
+        price();
+
         //*****     Changer la quantité de l'article   ******//
 
         // Au clic sur l'input
@@ -217,40 +241,17 @@ if (panier === null) {
             rowDeleteArticle.dataset.color
           );
           rowDeleteArticle.remove();
-          nbArticles();
-          price();
-        }
-
-        // Affichage et calcul de la quantité des articles
-        function nbArticles() {
-          let totalNbCanapes = 0;
-          let totalQuantity = document.querySelector("#totalQuantity");
-          let quantityArray = panierFinal.map((item) => item.quantity);
-          for (let i = 0; i < quantityArray.length; i++) {
-            totalNbCanapes += quantityArray[i];
-
+          if (panier.length === 0) {
+            totalNbCanapes = 0;
             totalQuantity.innerText = totalNbCanapes;
-          }
-        }
-        nbArticles();
-
-        // Affichage et calcul du prix total
-        function price() {
-          let priceArray = [];
-          let total = 0;
-          let totalPrice = document.querySelector("#totalPrice");
-
-          panierFinal.forEach((canapeFinal) => {
-            let canapePrice = canapeFinal.price * canapeFinal.quantity;
-
-            priceArray.push(canapePrice);
-
-            total += canapePrice;
-
+            total = 0;
             totalPrice.innerText = total.toFixed(2);
-          });
+          } else {
+            nbArticles();
+            price();
+          }
+          upDateLsPanier();
         }
-        price();
       }
     });
   });
@@ -271,13 +272,12 @@ let address_m = document.querySelector("#addressErrorMsg");
 let address_v = /([0-9]*)+([-'\s][a-zA-Zàâäéèêëïîôöùûüç]+)+/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");
-let city_v = /^([0-9]{5})+([-'\s]+[a-zA-Zàâäéèêëïîôöùûüç]+)+/;
+let city_v = /^[0-9]{5}([-'\s]+[a-zA-Zàâäéèêëïîôöùûüç]+)+/;
 let email = document.querySelector("#email");
 let email_m = document.querySelector("#emailErrorMsg");
 let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}/;
 
 // Validation du PRENOM
-
 firstName.addEventListener("change", firstNameValidate);
 function firstNameValidate() {
   function notValid(firstName, message) {
@@ -288,15 +288,12 @@ function firstNameValidate() {
   }
   if (firstName_v.test(firstName.value) === false) {
     notValid(firstName, "Veuillez entrer un Prénom");
-    console.log("false");
   } else {
     isValid(firstName);
-    console.log("true");
   }
 }
 
 // Validation du NOM
-
 lastName.addEventListener("change", lastNameValidate);
 function lastNameValidate() {
   function notValid(lastName, message) {
@@ -305,18 +302,14 @@ function lastNameValidate() {
   function isValid(lastName) {
     lastName_m.innerText = "";
   }
-
   if (lastName_v.test(lastName.value) === false) {
     notValid(lastName, "Veuillez entrer un Nom");
-    console.log("false");
   } else {
     isValid(lastName);
-    console.log("true");
   }
 }
 
 // Validation de l'ADRESSE
-
 address.addEventListener("change", addressValidate);
 function addressValidate() {
   function notValid(address, message) {
@@ -325,18 +318,14 @@ function addressValidate() {
   function isValid(address) {
     address_m.innerText = "";
   }
-
   if (address_v.test(address.value) === false) {
     notValid(address, "Veuillez entrer une adresse");
-    console.log("false");
   } else {
     isValid(address);
-    console.log("true");
   }
 }
 
 // Validation de la VILLE
-
 city.addEventListener("change", cityValidate);
 function cityValidate() {
   function notValid(city, message) {
@@ -345,18 +334,14 @@ function cityValidate() {
   function isValid(city) {
     city_m.innerText = "";
   }
-
   if (city_v.test(city.value) === false) {
     notValid(city, "Veuillez entrer le code postal et la ville");
-    console.log("false");
   } else {
     isValid(city);
-    console.log("true");
   }
 }
 
 // Validation de l'EMAIL
-
 email.addEventListener("change", emailValidate);
 function emailValidate() {
   function notValid(email, message) {
@@ -368,10 +353,8 @@ function emailValidate() {
 
   if (email_v.test(email.value) === false) {
     notValid(email, "Veuillez entrer une adresse email");
-    console.log("false");
   } else {
     isValid(email);
-    console.log("true");
   }
 }
 
@@ -392,7 +375,8 @@ function valid(e) {
     lastName_v.test(lastName.value) &&
     address_v.test(address.value) &&
     city_v.test(city.value) &&
-    email_v.test(email.value)
+    email_v.test(email.value) &&
+    panier.length !== 0
   ) {
     let contact = {
       firstName: firstName.value,
@@ -416,24 +400,21 @@ function valid(e) {
       },
       body: JSON.stringify(jsonBody),
     });
-    let orderId = {};
+
     promise.then(async (response) => {
       try {
         const retourOrder = await response.json();
         if (response.ok) {
-          console.log(`resultat de response.ok: ${response.ok}`);
-          console.log(retourOrder.orderId);
-
           location.href =
             "./confirmation.html?" + "orderId=" + retourOrder.orderId;
         } else {
           alert(`Erreur du serveur: ${response.status}`);
         }
       } catch (e) {
-        console.log(e);
+        alert(`Erreur du serveur: ${response.status}`);
       }
     });
   } else {
-    console.error("erreur");
+    alert("Veuillez vérifier vos articles et le formulaire");
   }
 }

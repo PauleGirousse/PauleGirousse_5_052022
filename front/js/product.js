@@ -4,10 +4,9 @@ let params = new URLSearchParams(window.location.search);
 let idParams = params.get("id");
 //conversion du panier Json en javascript
 let ancienPanier = JSON.parse(localStorage.getItem("lsPanier"));
-
-// localStorage.setItem("_id", idParams); //Ajouter dans le localstorage et convertir en format JSON
 let api = `http://localhost:3000/api/products/`;
 let idApi = api + idParams;
+
 let colorSelect = document.querySelector("#colors");
 let quantitySelect = document.querySelector("#quantity");
 let ajouteraupanier = document.querySelector("#addToCart");
@@ -41,7 +40,7 @@ const canapes = async function () {
       colorSelect.appendChild(option);
     }
   } else {
-    console.error("erreur du serveur");
+    alert(`Erreur du serveur: ${response.status}`);
   }
 };
 
@@ -65,8 +64,12 @@ function ajout() {
     //pour additionner, conversion de string en number
     quantity: parseInt(quantitySelect.value, 10),
   };
-  if (article.quantity === 0 || article.color === "") {
-    alert("Vous devez choisir une couleur et une quantité");
+  if (
+    article.quantity === 0 ||
+    article.quantity > 100 ||
+    article.color === ""
+  ) {
+    alert("Vous devez choisir une couleur et une quantité valides");
   } else {
     //****************  Si le panier contient déja des articles   ************//
 
