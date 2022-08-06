@@ -51,6 +51,11 @@ canapes();
 function miseAJourDuPanier() {
   localStorage.setItem("lsPanier", JSON.stringify(ancienPanier));
   alert("Votre article a été ajouté au panier");
+  if (confirm("Voulez-vous continuer vos achats?")) {
+    location.href = "./index.html";
+  } else {
+    location.href = "./cart.html";
+  }
 }
 
 //**************Au clic sur le bouton "Ajouter au panier"  *******************//

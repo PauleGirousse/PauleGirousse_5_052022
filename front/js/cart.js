@@ -226,8 +226,12 @@ if (panier === null) {
             parseInt(this.value)
           );
           canapeFinal.quantity = parseInt(this.value);
-          nbArticles();
-          price();
+          if (canapeFinal.quantity < 101) {
+            nbArticles();
+            price();
+          } else {
+            alert("Vous devez choisir une quantité comprise entre 1 et 100.")
+          }
         }
 
         //***  Supprimer un article  ***********/
