@@ -266,20 +266,21 @@ if (panier === null) {
 let order = document.querySelector("#order");
 let firstName = document.querySelector("#firstName");
 let firstName_m = document.querySelector("#firstNameErrorMsg");
-let firstName_v =
-  /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s][a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?/;
+// let firstName_v =
+//   /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s][a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?/;
+let firstName_v = /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s][a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?$/;
 let lastName = document.querySelector("#lastName");
 let lastName_m = document.querySelector("#lastNameErrorMsg");
-let lastName_v = /^[a-zA-Zéèîï]+([[a-zA-Zéèëêïîàâäôöùüûç]+)/;
+let lastName_v = /^[a-zA-Zéèîï]+([[a-zA-Zéèëêïîàâäôöùüûç]+)$/;
 let address = document.querySelector("#address");
 let address_m = document.querySelector("#addressErrorMsg");
-let address_v = /(([0-9]*)?)+([-'\s][a-zA-Zàâäéèêëïîôöùûüç]+)(([0-9]*)?))+/;
+let address_v = /([0-9]*)?([-'\s][a-zA-Zàâäéèêëïîôöùûüç]+)(([0-9]*)?)+$/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");
-let city_v = /^[0-9]{5}([-'\s]+[a-zA-Zàâäéèêëïîôöùûüç]+)+/;
+let city_v = /^[0-9]{5}([-'\s]+[a-zA-Zàâäéèêëïîôöùûüç]+)+$/;
 let email = document.querySelector("#email");
 let email_m = document.querySelector("#emailErrorMsg");
-let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}/;
+let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
 
 // Validation du PRENOM
 firstName.addEventListener("change", firstNameValidate);
