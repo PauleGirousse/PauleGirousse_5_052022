@@ -47,11 +47,12 @@ const canapes = async function () {
 canapes();
 
 //Fonction de mise à jour du panier
-//Ajout de l'article dans le panier, conversion du format javascript du panier en Json pour le mettre dans le localstorage, création d'une alertee pour spécifier à l'utilisateur que son article a été ajouté.
+//Ajout de l'article dans le panier, conversion du format javascript du panier en Json pour le mettre dans le localstorage, création d'une alerte pour spécifier à l'utilisateur que son article a été ajouté.
+// Un autre message d'alerte lui permet de continuer ses achats en étant redirigé vers la page d'accueil sinon il est envoyé sur la page panier afin de valider sa commande.
 function miseAJourDuPanier() {
   localStorage.setItem("lsPanier", JSON.stringify(ancienPanier));
   alert("Votre article a été ajouté au panier");
-  if (confirm("Voulez-vous continuer vos achats?")) {
+  if (confirm("Voulez-vous ajouter un autre article ?")) {
     location.href = "./index.html";
   } else {
     location.href = "./cart.html";
