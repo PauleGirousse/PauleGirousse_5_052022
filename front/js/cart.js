@@ -266,20 +266,23 @@ if (panier === null) {
 let order = document.querySelector("#order");
 let firstName = document.querySelector("#firstName");
 let firstName_m = document.querySelector("#firstNameErrorMsg");
-// let firstName_v =
-//   /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s][a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?/;
-let firstName_v = /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s][a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?$/;
+// Prénom composé avec, apostrophe, espace et tiret
+let firstName_v = /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s]+[a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?$/;
 let lastName = document.querySelector("#lastName");
 let lastName_m = document.querySelector("#lastNameErrorMsg");
-let lastName_v = /^[a-zA-Zéèîï]+([[a-zA-Zéèëêïîàâäôöùüûç]+)$/;
+// Nom composé, apostrophe, espace et tiret
+let lastName_v = /^[a-zA-Zéèîï]+[-a-zA-Zéèëêïîàâäôöùüûç',\s]+$/;
 let address = document.querySelector("#address");
 let address_m = document.querySelector("#addressErrorMsg");
-let address_v = /([0-9]*)?([-'\s][a-zA-Zàâäéèêëïîôöùûüç]+)(([0-9]*)?)+$/;
+// Adresse avec des chiffres, espace, tiret, apostrophe, virgule, point et lettres 
+let address_v = /^[a-zA-Zàâäéèêëïîôöùûüç0-9-',.\s]+$/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");
+// Code postal et nom de ville avec tiret, espace et apostrophe
 let city_v = /^[0-9]{5}([-'\s]+[a-zA-Zàâäéèêëïîôöùûüç]+)+$/;
 let email = document.querySelector("#email");
 let email_m = document.querySelector("#emailErrorMsg");
+// Email avec chiffres, lettres, tiret, point et underscore
 let email_v = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
 
 // Validation du PRENOM
