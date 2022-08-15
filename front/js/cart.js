@@ -62,8 +62,6 @@ function upDateItems(id, color) {
       produit._id === deleteArticle._id && produit.color === deleteArticle.color
   );
   panier = panier.filter((produit) => produit !== rechercheLsArticleIdentique);
-  upDateLsPanier();
-  upDateDomPanier();
 }
 
 //********************Création/Mise à jour du panier   **************************//
@@ -226,11 +224,11 @@ if (panier === null) {
             parseInt(this.value)
           );
           canapeFinal.quantity = parseInt(this.value);
-          if (canapeFinal.quantity < 101) {
+          if (canapeFinal.quantity >= 1 && canapeFinal.quantity < 101) {
             nbArticles();
             price();
           } else {
-            alert("Vous devez choisir une quantité comprise entre 1 et 100.")
+            alert("Vous devez choisir une quantité comprise entre 1 et 100.");
           }
         }
 
@@ -267,14 +265,15 @@ let order = document.querySelector("#order");
 let firstName = document.querySelector("#firstName");
 let firstName_m = document.querySelector("#firstNameErrorMsg");
 // Prénom composé avec, apostrophe, espace et tiret
-let firstName_v = /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s]+[a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?$/;
+let firstName_v =
+  /^[a-zA-Zéèïî][a-zéèëêàâäçïîôöùûü]+([-'\s]+[a-zA-Zéèîï][a-zéèêëàâäçîïôöùûü]+)?$/;
 let lastName = document.querySelector("#lastName");
 let lastName_m = document.querySelector("#lastNameErrorMsg");
 // Nom composé, apostrophe, espace et tiret
 let lastName_v = /^[a-zA-Zéèîï]+[-a-zA-Zéèëêïîàâäôöùüûç',\s]+$/;
 let address = document.querySelector("#address");
 let address_m = document.querySelector("#addressErrorMsg");
-// Adresse avec des chiffres, espace, tiret, apostrophe, virgule, point et lettres 
+// Adresse avec des chiffres, espace, tiret, apostrophe, virgule, point et lettres
 let address_v = /^[a-zA-Zàâäéèêëïîôöùûüç0-9-',.\s]+$/;
 let city = document.querySelector("#city");
 let city_m = document.querySelector("#cityErrorMsg");

@@ -70,11 +70,7 @@ function ajout() {
     //pour additionner, conversion de string en number
     quantity: parseInt(quantitySelect.value, 10),
   };
-  if (
-    article.quantity === 0 ||
-    article.quantity > 100 ||
-    article.color === ""
-  ) {
+  if (article.quantity <= 1 || article.quantity > 100 || article.color === "") {
     alert("Vous devez choisir une couleur et une quantité valides");
   } else {
     //****************  Si le panier contient déja des articles   ************//
