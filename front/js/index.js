@@ -14,7 +14,6 @@ promise.then((response) => {
         let newImage = document.createElement("img");
         let newProductName = document.createElement("h3");
         let newProductDescription = document.createElement("p");
-        let newId = document.createElement("_id");
 
         newArticle.appendChild(newImage);
         newArticle.appendChild(newProductName);
@@ -22,7 +21,7 @@ promise.then((response) => {
         newA.appendChild(newArticle);
         items.appendChild(newA);
 
-        newId = canape._id;
+        let newId = canape._id;
 
         //*******  Ajout  des attributs et affichage sur la page Index   ******//
 
